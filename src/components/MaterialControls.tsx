@@ -1,11 +1,10 @@
 import React from "react";
 import { IonRow, IonCol, IonButton, IonIcon } from "@ionic/react";
-
 import { refreshOutline, paperPlane } from "ionicons/icons";
 
 
-const BmiControls: React.FC<{
-  onCalculate: () => void;
+const MaterialControls: React.FC<{
+  onSend: () => void;
   onReset: () => void;
 }> = (props) => {
   return (
@@ -14,19 +13,16 @@ const BmiControls: React.FC<{
       flex:'wrap',
     }}>
       
-        <IonButton onClick={() => props.onCalculate()}>
+        <IonButton onClick={() => props.onSend()}>
           <IonIcon slot="start" icon={paperPlane}></IonIcon>
           Send / Enviar
         </IonButton>
-     
-      
         <IonButton fill="outline" onClick={() => props.onReset()}>
           <IonIcon slot="start" icon={refreshOutline}></IonIcon>
           Reset
         </IonButton>
-      
     </IonRow>
   );
 };
 
-export default BmiControls;
+export default MaterialControls;

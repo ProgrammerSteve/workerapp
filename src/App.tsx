@@ -15,79 +15,44 @@ import {
   IonAlert,
 } from "@ionic/react";
 
-import { calculatorOutline, refreshOutline } from "ionicons/icons";
-
-import BmiControls from "./components/BmiControls";
+import { calculatorOutline, refreshOutline, paperPlane} from "ionicons/icons";
 import BmiResults from "./components/BmiResults";
-import InputControl from "./components/InputControl";
+import MaterialControls from "./components/MaterialControls";
 
-/* Core CSS required for Ionic components to work properly */
-import "@ionic/react/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
-
-/* Optional CSS utils that can be commented out */
-import "@ionic/react/css/padding.css";
-import "@ionic/react/css/float-elements.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/display.css";
-
-/* Theme variables */
-import "./theme/variables.css";
-
-
-setupIonicReact();
-
+// setupIonicReact();
 const App: React.FC = () => {
-  const [calculatedBmi, setCalculatedBmi] = useState<number>(0);
   const [error, setError] = useState<string>("");
-  const [calcUnits,setCalcUnits]=useState<'mkg'|'ftlbs'>('mkg');
-
-
-  const weightInputRef = useRef<HTMLIonInputElement>(null);
-  const heightInputRef = useRef<HTMLIonInputElement>(null);
-
-  const calculateBMI = () => {
-    const enteredWeight = weightInputRef.current!.value;
-    const enteredHeight = heightInputRef.current!.value;
+  const fenceInputRef = useRef<HTMLIonInputElement>(null);
+  const postsInputRef = useRef<HTMLIonInputElement>(null);
+  const nameInputRef = useRef<HTMLIonInputElement>(null);
+  const handleReset=()=>{
+    fenceInputRef.current!.value = "";
+    postsInputRef.current!.value = "";
+    nameInputRef.current!.value = "";
+  }
+  const handleSend=()=>{
+    const enteredFence=fenceInputRef.current!.value
+    const enteredPosts=postsInputRef.current!.value
+    const enteredName=nameInputRef.current!.value
+    const currentTime= new Date()
     if (
-      !enteredHeight ||
-      !enteredWeight ||
-      +enteredHeight <= 0 ||
-      +enteredWeight <= 0
+      !enteredName ||
+      !enteredFence ||
+      !enteredPosts ||
+      +enteredFence <= 0 ||
+      +enteredPosts <= 0
     ) {
-      setError("Please enter a valid, non-negative, input number");
-
+      setError("Please do not leave any blanks");
       return;
     }
-    const weightConversionFactor=(calcUnits=='ftlbs')? (1/2.2)  : 1;
-    const heightConversionFactor=(calcUnits=='ftlbs')? (1/3.28)  : 1;
-
-    const weight=+enteredWeight*weightConversionFactor;
-    const height=+enteredHeight*heightConversionFactor;
-
-    const bmi = weight / (height * height);
-    setCalculatedBmi(bmi);
-  };
-  const resetInputs = () => {
-    weightInputRef.current!.value = "";
-    heightInputRef.current!.value = "";
-  };
-
+    console.log({enteredFence,enteredPosts,enteredName,currentTime})
+    fenceInputRef.current!.value = "";
+    postsInputRef.current!.value = "";
+    nameInputRef.current!.value = "";
+  }
   const clearError = () => {
     setError("");
   };
-
-  const selectCalcUnitHandler=(selectedValue: 'mkg'|'ftlbs')=>{
-    setCalcUnits(selectedValue);
-  }
-
-
   return (
     <>
       <IonAlert
@@ -98,45 +63,37 @@ const App: React.FC = () => {
       <IonApp>
         <IonHeader>
           <IonToolbar color="primary">
-            <IonTitle>BMI Calculator</IonTitle>
+            <IonTitle>The Dave App</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
           <IonGrid className="ion-text-center ion-margin">
 
-
-            <IonRow>
-              <IonCol>
-                  <InputControl 
-                    selectedValue={calcUnits} 
-                    onSelectValue={selectCalcUnitHandler}
-                  />
-              </IonCol>
-            </IonRow>
-
-
             <IonRow>
               <IonCol>
                 <IonItem>
-                  <IonLabel position="floating">Your Height {calcUnits=="mkg"?'(meters)':'(ft)'}</IonLabel>
-                  <IonInput ref={heightInputRef} type="number"></IonInput>
+                  <IonLabel position="floating">Name/Nombre</IonLabel>
+                  <IonInput ref={nameInputRef} type="text"></IonInput>
                 </IonItem>
               </IonCol>
             </IonRow>
             <IonRow>
-
-
               <IonCol>
                 <IonItem>
-                  <IonLabel position="floating">Your Weight {calcUnits=="mkg"?'(kg)':'(lbs)'}</IonLabel>
-                  <IonInput ref={weightInputRef} type="number"></IonInput>
+                  <IonLabel position="floating"># Fences/Vallas</IonLabel>
+                  <IonInput ref={fenceInputRef} type="number"></IonInput>
                 </IonItem>
               </IonCol>
             </IonRow>
-
-
-            <BmiControls onCalculate={calculateBMI} onReset={resetInputs} />
-            {calculatedBmi > 0 && <BmiResults result={calculatedBmi} />}
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonLabel position="floating"># Posts/Poste </IonLabel>
+                  <IonInput ref={postsInputRef} type="number"></IonInput>
+                </IonItem>
+              </IonCol>
+            </IonRow>
+            <MaterialControls onSend={handleSend} onReset={handleReset} />
           </IonGrid>
         </IonContent>
       </IonApp>
